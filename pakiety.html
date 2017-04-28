@@ -1,0 +1,340 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>WhyR?</title>
+
+
+  <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript" src="pakiety.js"></script>
+
+
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+
+
+  <style type="text/css">
+
+    svg {
+       display: block;
+       margin-left: auto;
+       margin-right: auto;
+       border: 1px solid black;
+      
+      }
+
+  
+.x.axis .domain {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+text {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+
+#tooltip { 
+    position: absolute;  
+    height: auto;
+    width:  auto;       
+    padding: 10px;       
+    font: 12px sans-serif;  
+    text-align: left;      
+    background: white; /* tlo */
+    border: 10px;    /* obramowanie */
+    border-radius: 4px;    /* obramowanie zaokrąglone */ 
+    box-shadow:  0px 0px 10px 2px rgba(0,0,0,0.57); 
+    pointer-events: none;/*zeby nie reagował na najechanie na niego myszką, to co my robimy to tworzymy tooltipa i potem
+    go ukrywamy lub nie, jest niewidoczny ale jest, wiec mozna na niego najechac myszka, jesli najedziemy na niego,
+    to nie mamy dostepu do elementow pod nim, mozna by było po prostu tworzyc i usuwac go w .on */
+    font-family: 'Roboto Condensed', sans-serif;
+  }
+    </style>
+     
+</head>
+<body>
+
+ <div id="chart2" >
+   </div>
+
+<script type="text/javascript">
+
+
+
+
+//********************************************************************************* USTAWIENIA OBSZARU RYSOWANIA
+
+var margin = {top: 140, right: 60, bottom: 60, left: 60};
+
+var width = 980 - margin.left - margin.right,
+    height = 560 - margin.top - margin.bottom;
+
+// CAŁA GRAFIKA
+var svg=d3.select("#chart2")  
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("id", "svg_chart2")
+
+// OBSZAR WYKRESU
+var g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr( "xmlns",'xlink="http://www.w3.org/1999/xlink"')
+
+
+    // padding between nodes
+   var   padding = 2,
+    minRadius = 1,
+    maxRadius = 80,
+    numberOfNodes = dane.length;
+
+
+
+
+//********************************************************************************* TYTUŁY, ŹRÓDŁO
+
+
+
+// TYTUŁ I PODTYTUŁ
+var tytulik = "Co piszczy na CRANie?";
+var podtytulik = "Najpopularniejsze pakiety R-owe wśród uczestników konferencji";
+
+
+
+var tytuly = svg.append("g")
+                 .attr("class", "tytuly")
+
+var tytul = tytuly.append("text")
+              .attr("x", margin.left)             
+              .attr("y", (margin.top)*(1/4))
+              .style("font-size", "28px")  
+              .text(tytulik);
+
+var podtytul = tytuly.append("text")
+              .attr("x", margin.left)             
+              .attr("y", (margin.top)*(2/4))
+              .style("font-size", "16px")  
+              .text(podtytulik);
+
+var zrodlo = tytuly.append("text")
+              .attr("x", margin.left)             
+              .attr("y", height+margin.top+ margin.bottom*(2/3))
+              .style("font-size", "10px") 
+              .text("Źródło: WhyR - ankiety, RDocumentation");
+
+//********************************************************************************* SKALE
+
+
+var loading = svg.append("text")
+  .attr("x", ( width + margin.left + margin.right ) / 2)
+  .attr("y", ( height + margin.top + margin.bottom ) / 2)
+  .attr("dy", ".35em")
+  .style("text-anchor", "middle")
+  .text("Generowanie wykresu...");
+
+var x = d3.scale.linear()
+  .domain( [0, d3.max(dane, function(d){ return d.doswiadczenie_analiza_mean;})] )
+  .range( [0, width ] );
+
+
+var xAxis = d3.svg.axis()
+  .scale(x);
+
+
+  var skalaR = d3.scale.sqrt()
+  skalaR.range([minRadius,  maxRadius]);
+
+  skalaR.domain( [ 0,  d3.max(dane, function(d){ return d.Freq;}) ] ) 
+
+  var skalaKolor = d3.scale.ordinal()
+  skalaKolor.range(["blue", "red"]);
+  skalaKolor.domain( [ true, false ] ) 
+
+
+
+
+
+// Create random node data.
+var data = dane.map(function(d) {
+  var value = d.doswiadczenie_analiza_mean,
+      size =  skalaR(d.Freq),
+       name = d.pakiety,
+       kolor = skalaKolor(d.dosw),
+      datum = {value: value, size: size, name: name, kolor: kolor};
+  return datum;
+});
+
+
+  
+// Map the basic node data to d3-friendly format.
+var nodes = data.map(function(node, index) {
+  return {
+    idealradius: node.size,
+    radius: 0,
+    // Give each node a random color.
+    color: node.kolor,
+    // Set the node's gravitational centerpoint.
+    idealcx: x(node.value),
+    idealcy: height / 2,
+    x: x(node.value),
+    // Add some randomization to the placement;
+    // nodes stacked on the same point can produce NaN errors.
+    y: height / 2 + Math.random(),
+    name: node.name
+  };  
+});
+
+var force = d3.layout.force()
+  .nodes(nodes)
+  .size([width, height])
+  .gravity(0)
+  .charge(0)
+  .on("tick", tick)
+  .start();
+
+
+/**
+ * On a tick, apply custom gravity, collision detection, and node placement.
+ */
+function tick(e) {
+  for ( i = 0; i < nodes.length; i++ ) {
+    var node = nodes[i];
+    /*
+     * Animate the radius via the tick.
+     *
+     * Typically this would be performed as a transition on the SVG element itself,
+     * but since this is a static force layout, we must perform it on the node.
+     */
+    node.radius = node.idealradius - node.idealradius * e.alpha * 10;
+    node = gravity(.2 * e.alpha)(node);
+    node = collide(.5)(node);
+    node.cx = node.x;
+    node.cy = node.y;
+  }
+}
+
+/**
+ * On a tick, move the node towards its desired position,
+ * with a preference for accuracy of the node's x-axis placement
+ * over smoothness of the clustering, which would produce inaccurate data presentation.
+ */
+function gravity(alpha) {
+  return function(d) {
+    d.y += (d.idealcy - d.y) * alpha;
+    d.x += (d.idealcx - d.x) * alpha * 3;
+    return d;
+  };
+}
+
+/**
+ * On a tick, resolve collisions between nodes.
+ */
+function collide(alpha) {
+  var quadtree = d3.geom.quadtree(nodes);
+  return function(d) {
+    var r = d.radius + maxRadius + padding,
+        nx1 = d.x - r,
+        nx2 = d.x + r,
+        ny1 = d.y - r,
+        ny2 = d.y + r;
+    quadtree.visit(function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== d)) {
+        var x = d.x - quad.point.x,
+            y = d.y - quad.point.y,
+            l = Math.sqrt(x * x + y * y),
+            r = d.radius + quad.point.radius + padding;
+        if (l < r) {
+          l = (l - r) / l * alpha;
+          d.x -= x *= l;
+          d.y -= y *= l;
+          quad.point.x += x;
+          quad.point.y += y;
+        }
+      }
+      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+    });
+    return d;
+  };
+}
+
+/**
+ * Run the force layout to compute where each node should be placed,
+ * then replace the loading text with the graph.
+ */
+function renderGraph() {
+  // Run the layout a fixed number of times.
+  // The ideal number of times scales with graph complexity.
+  // Of course, don't run too long—you'll hang the page!
+  force.start();
+  for (var i = 100; i > 0; --i) force.tick();
+  force.stop();
+
+  g.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," +  height  + ")")
+    .call(xAxis);
+
+     var tooltipki=d3.select("#chart2").append("div").attr("id", "tooltip").style("opacity",0)
+
+  var circle = g.selectAll("circle")
+    .data(nodes)
+  .enter().append("circle")
+    .style("fill", function(d) { return d.color; })
+    .attr("cx", function(d) { return d.x} )
+    .attr("cy", function(d) { return d.y} )
+    .attr("r", function(d) { return d.radius} )
+    .on("mouseover", function(d){
+
+
+      tooltipki.html( "<b>" + d.name +"</b>" + "<br/>"
+
+           )
+      .style("left", (d3.event.pageX ) + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
+      .style("top", (d3.event.pageY) + "px")
+      .transition()
+      .duration(300)
+      .style("opacity",1);
+    
+
+      d3.select(this)
+            .transition()
+            .duration(300)
+            .style("stroke-width", "3px");
+
+
+
+      }
+
+    )
+.on("mouseout", function(d){
+
+    
+      d3.select(this)
+        .transition()
+        .duration(300)
+        .style("stroke-width", "0.5px");
+
+      tooltipki
+      .transition()
+      .duration(300)
+      .style("opacity", 0);
+              
+ 
+
+      }
+    );
+
+  loading.remove();
+}
+// Use a timeout to allow the rest of the page to load first.
+setTimeout(renderGraph, 0);
+
+
+</script>
+</body>
+
+
+
+</html>
+
