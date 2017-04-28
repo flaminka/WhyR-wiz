@@ -45,7 +45,16 @@ text {
   shape-rendering: auto;
 }
 
-.labelka, #przycisk{
+.labelka{
+
+  font-size: 14px;
+  stroke: none;
+  fill: grey;
+
+}
+
+
+#przycisk{
 
   font-size: 12px;
 
@@ -56,7 +65,7 @@ text {
   fill: grey;
 }
 
-#tooltip { 
+#tooltip, #tooltip0 { 
     position: absolute;  /* jest pozycjonowana pikselami ktore zostaly podane */  
     height: auto;
     width:  auto;       
@@ -115,6 +124,7 @@ var g = svg.append("g")
 
 
 
+
 var ile_rano = dane.filter(function(d){ return d.sesja == "sesja poranna"; }).length
 
 var paddingBox = 10; // miedzy rect w pionie
@@ -144,7 +154,7 @@ var skalaZajete = d3.scale.linear();
 
 var skalaStatystyki = d3.scale.linear();
     skalaStatystyki.domain([0,100])
-    skalaStatystyki.range([0, dlugoscStatystyki])
+    skalaStatystyki.range([1, dlugoscStatystyki])
 
 
 //********************************************************************************* TYTUŁY, ŹRÓDŁO
@@ -169,6 +179,79 @@ var zrodlo = tytuly.append("text")
               .attr("y", height+margin.top+ margin.bottom*(2/3))
               .style("font-size", "10px") 
               .text("Źródło: WhyR - ankiety");
+
+// obrazek
+// svg.selectAll("image").data([0]).enter()
+//             .append("svg:image")
+//               .attr("xlink:href", "pomoc.ico")
+//               .attr("x", margin.left+widthBox)             
+//               .attr("y", (margin.top)*(1/3))
+//                 .attr("width", "20")
+//                 .attr("height", "20");
+
+var pomoc = svg.append("g").attr("class", "pomoc")
+              .attr("transform","translate(0,10)")
+
+ var pomoc_kolko =    pomoc.append("circle")
+                        .attr("cx", margin.left+widthBox)             
+                        .attr("cy", (margin.top)*(1/3))
+                        .attr("r", 10)
+                        .attr("fill", "white")
+                        .style("stroke", "grey")
+                        .style("stroke-width", "2px")
+
+  var pomoc_tekst =   pomoc.append("text")
+                        .attr("x", margin.left+widthBox)             
+                        .attr("y", (margin.top)*(1/3)+6)
+                        .style("stroke", "none")
+                        .style("fill", "grey")
+                        .text("?")
+                        .attr("text-anchor", "middle")
+                        .style("font-size", "18px")
+                        .style("font-weight", "bold")
+                        .style("pointer-events", "none")
+
+var tooltipki0=d3.select("#chart1").append("div").attr("id", "tooltip0").style("opacity",0)
+
+  pomoc_kolko.on("mouseover",function(d){
+    
+     d3.select(this).style("stroke", "red")
+      pomoc_tekst.style("fill", "red")
+
+       tooltipki0.html( "<b>" + "Szczegóły" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+         "Każdy uczestnik konferencji może zapisać się na 2 warsztaty:"  + "<br/>"+
+         "jeden poranny, drugi popołudniowy. Ścieżki między warsztatami" + "<br/>"+ 
+         "pokazują jaki warsztat popołudniowy wybierały najczęściej"  + "<br/>"+
+         "osoby z danego warsztatu porannego."+ "<br/>"+
+         ""  + "<br/>"+
+         "Liczby podane po plusie przy popularności warsztatu oznaczają" + "<br/>"+
+         "liczbę osób na liście rezerwowej."
+
+
+           )
+      .style("left", d3.event.pageX + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
+      .style("top", d3.event.pageY + "px")
+      .transition()
+      .duration(300)
+      .style("opacity",1);
+  })
+  .on("mouseout", function(d){
+
+      d3.select(this).style("stroke", "grey")
+      pomoc_tekst.style("fill", "grey")
+
+
+      tooltipki0
+      .transition()
+      .duration(300)
+      .style("opacity", 0);
+              
+  })
+                 
+
+
+
 
 
 //********************************************************************************* TWORZENIE PROSTOKĄTA
@@ -322,7 +405,7 @@ dodajStatystyki = function(sesja_grupy){
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_R_0_2);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -335,7 +418,7 @@ dodajStatystyki = function(sesja_grupy){
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_R_2_6);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -348,7 +431,7 @@ dodajStatystyki = function(sesja_grupy){
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_R_6_wiecej);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -401,7 +484,7 @@ dodajStatystyki = function(sesja_grupy){
 // labelki
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect*3 )  
+                    .attr("x", widthBox/4 + paddingRect*2 )  
                     .attr("y", -paddingRect*2 )             
                     .text("podane doświadczenie w latach:" )
                     .style("text-anchor", "middle")
@@ -444,7 +527,7 @@ sesja_statystyki.append("text")
                         .style("opacity", 1)
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 - paddingRect*4 )
+                    .attr("x", widthBox/4 - paddingRect*3 )
                     .attr("y", heightBox/5*3+paddingSlupki*3)              
                     .text(" w R")
                     .style("text-anchor", "start")
@@ -467,7 +550,7 @@ sesja_statystyki.append("text")
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_0_2);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -480,7 +563,7 @@ sesja_statystyki.append("text")
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_2_6);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -493,7 +576,7 @@ sesja_statystyki.append("text")
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_6_wiecej);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -546,10 +629,33 @@ sesja_statystyki.append("text")
 // labelki
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect*6 )
+                    .attr("x", widthBox/4 + paddingRect*5 )
                     .attr("y", heightBox/5*3+paddingSlupki*3)              
                     .text(" w analizie danych")
                     .style("text-anchor", "start")
+                    .attr("dominant-baseline", "hanging")
+                      .style("fill", "grey")
+                       .style("opacity", 0)
+                        .transition()
+                        .style("opacity", 1)
+
+sesja_statystyki.append("text")
+                    .attr("x", widthBox - paddingRect*2 )  
+                    .attr("y", -paddingRect*2 )           
+                    .text("osób z mgr/dr:")
+                    .style("text-anchor", "end")
+                    .attr("dominant-baseline", "hanging")
+                      .style("fill", "grey")
+                       .style("opacity", 0)
+                        .transition()
+                        .style("opacity", 1)
+
+sesja_statystyki.append("text")
+                    .attr("x", widthBox - paddingRect*3 )  
+                     .attr("y", heightBox/5+paddingSlupki)              
+                    .text(function(d){ return d.st_nauk.toFixed(1)+"%"})
+                    .style("text-anchor", "end")
+                    .style("font-size", "20px")
                     .attr("dominant-baseline", "hanging")
                       .style("fill", "grey")
                        .style("opacity", 0)
@@ -585,7 +691,7 @@ var sesja_popoludnie_grupy = sesja_popoludnie.selectAll("g")
 
 
     sesja_popoludnie_grupy.append("rect")
-                          .style("stroke", "black")
+                          .style("stroke", "grey")
                           .attr("height", heightBox)
                           .attr("width",widthBox)          
                           .style("fill", "none")
@@ -735,7 +841,7 @@ var przycisk = g.append("g").attr("id", "przycisk").attr("transform", "translate
          przycisk.append("text")
                           .attr("x", paddingRect/2)             
                           .attr("y", paddingRect/2)
-                          .text("Zwiń/Rozwiń statystyki")
+                          .text("Rozwiń/Zwiń statystyki")
                           .attr("dominant-baseline", "hanging")
                           .style("text-anchor", "start")
                           .style("pointer-events", "none")
@@ -804,10 +910,11 @@ labelWiecej_popoludnie
   .on("mouseover", function(d){
 
 
-      tooltipki.html( "<b>" + "Zainteresowania" +"</b>" + "<br/>"+
-          "1. "+ d.zaint1 + " " + d.zaint1_ile.toFixed(0)+ "%"  + "<br/>" +
-          "2. "+ d.zaint2 + " " + d.zaint2_ile.toFixed(0)+ "%"  + "<br/>" +
-          "3. "+ d.zaint3 + " " + d.zaint3_ile.toFixed(0)+ "%"  + "<br/>"
+      tooltipki.html( "<b>" + "Zainteresowania uczestników" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+          "<b>1.</b> "+ d.zaint1 + ": " + d.zaint1_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>2.</b> "+ d.zaint2 + ": " + d.zaint2_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>3.</b> "+ d.zaint3 + ": " + d.zaint3_ile.toFixed(0)+ "% osób"  + "<br/>"
          
 
 
@@ -841,10 +948,15 @@ labelWiecej_rano
   .on("mouseover", function(d){
 
 
-      tooltipki.html( "<b>" + "Zainteresowania" +"</b>" + "<br/>"+
-          "1. "+ d.zaint1 + " " + d.zaint1_ile.toFixed(0)+ "%"  + "<br/>" +
-          "2. "+ d.zaint2 + " " + d.zaint2_ile.toFixed(0)+ "%"  + "<br/>" +
-          "3. "+ d.zaint3 + " " + d.zaint3_ile.toFixed(0)+ "%"  + "<br/>"
+     
+      tooltipki.html( "<b>" + "Zainteresowania uczestników" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+          "<b>1.</b> "+ d.zaint1 + ": " + d.zaint1_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>2.</b> "+ d.zaint2 + ": " + d.zaint2_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>3.</b> "+ d.zaint3 + ": " + d.zaint3_ile.toFixed(0)+ "% osób"  + "<br/>"
+         
+
+
            )
     .style("left", (d3.event.pageX-widthBox+2*paddingRect ) + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
       .style("top", (d3.event.pageY+2*paddingRect) + "px")
@@ -873,24 +985,9 @@ labelWiecej_rano
 
 
 
-// strzalki podswietlanie sciezki
-
-// wykresy w rect troche poprzesuwać, zmienic kolor, dodac info o doktorach
-// dodać do tooltipow też te wykresy, pozmieniac wyglad
 
 // posprawdzać dzialanie w innych przegladarkach, systemach, rozdzielczosci
 
-// zrobić niebieską ikonę "Pomoc" 
-
-// pozmieniać wygląd obramowań rect i tego przycisku
-
-//rozszerzac svg plynnie
-
-// poukladac kod
-
-//sesja poranna sesja popołudniowa te napisy uladnic
-
-// procenty sie nie sumuja do 100
 
 
 </script>
