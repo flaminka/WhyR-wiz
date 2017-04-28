@@ -1,4 +1,4 @@
-var dane =[
+var danePakiety =[
   {
     "pakiety": "car",
     "Freq": 4,

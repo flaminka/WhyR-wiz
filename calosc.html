@@ -10,57 +10,39 @@
     <script type="text/javascript" src="warsztaty.js"></script>
 
 
-<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
 
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&amp;subset=latin-ext" rel="stylesheet">
 
   <style type="text/css">
 
-    svg {
+     svg{
        display: block;
        margin-left: auto;
        margin-right: auto;
        border: 1px solid black;
-      
+       border-radius: 0px;  
       }
 
-  
-.x.axis .domain {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-text {
-  font-family: 'Roboto Condensed', sans-serif;
-}
-
-
-#tooltip { 
-    position: absolute;  /* jest pozycjonowana pikselami ktore zostaly podane */  
-    height: auto;
-    width:  auto;       
-    padding: 10px;       
-    font: 12px sans-serif;  
-    text-align: left;      
-    background: white; /* tlo */
-    border: 10px;    /* obramowanie */
-    border-radius: 4px;    /* obramowanie zaokrąglone */ 
-    box-shadow:  0px 0px 10px 2px rgba(0,0,0,0.57); 
-    pointer-events: none;/*zeby nie reagował na najechanie na niego myszką, to co my robimy to tworzymy tooltipa i potem
-    go ukrywamy lub nie, jest niewidoczny ale jest, wiec mozna na niego najechac myszka, jesli najedziemy na niego,
-    to nie mamy dostepu do elementow pod nim, mozna by było po prostu tworzyc i usuwac go w .on */
-    font-family: 'Roboto Condensed', sans-serif;
-  }
-
+  img{
+       display: block;
+       margin-left: auto;
+       margin-right: auto;
+      }
 
 
 text {
   font-family: 'Roboto Condensed', sans-serif;
+
 }
 
   .warsztat_nazwa {
         font-size: 12.5px;
   }
+
+/*.glowna rect {
+        stroke-width: 1px;
+        stroke-dasharray: 5px 2px;
+}*/
 
  .link {
   fill: none;
@@ -69,16 +51,74 @@ text {
   shape-rendering: auto;
 }
 
-.labelka, #przycisk{
+.labelka{
+
+  font-size: 14px;
+  stroke: none;
+  fill: grey;
+
+}
+
+
+#przycisk{
 
   font-size: 12px;
 
 }
 
-.zajetosc text {
+.zajetosc text, .statystyki text {
   stroke: none;
   fill: grey;
+  font-size:12px ;
 }
+
+#tooltip, #tooltip0 { 
+    position: absolute;  /* jest pozycjonowana pikselami ktore zostaly podane */  
+    height: auto;
+    width:  auto;       
+    padding: 10px;       
+    font: 12px sans-serif;  
+    text-align: left;      
+    background: white; /* tlo */
+    border: 1px solid grey;
+    border-radius: 0px;    /* obramowanie zaokrąglone */ 
+    box-shadow:  0px 0px 0px 0px rgba(0,0,0,1); 
+    pointer-events: none;/*zeby nie reagował na najechanie na niego myszką, to co my robimy to tworzymy tooltipa i potem
+    go ukrywamy lub nie, jest niewidoczny ale jest, wiec mozna na niego najechac myszka, jesli najedziemy na niego,
+    to nie mamy dostepu do elementow pod nim, mozna by było po prostu tworzyc i usuwac go w .on */
+    font-family: 'Roboto Condensed', sans-serif;
+  }
+
+
+.axis path  {
+        fill: none;
+        stroke: grey;
+        stroke-width: 2px;
+        shape-rendering: crispEdges;  
+        stroke-opacity: 1;
+      }
+
+
+    .axis line{
+       stroke: grey;
+       stroke-width: 2px;
+       stroke-opacity: 0.2;
+      }
+
+
+     .axis text, .legend{
+        font-family: 'Roboto Condensed', sans-serif;
+        font-size: 12px;
+        stroke: none;
+        fill: grey;
+     }
+
+
+.legend text {
+  stroke: none;
+  fill: black;
+}
+
 
 
     </style>
@@ -89,7 +129,8 @@ text {
 <div id="chart">
    </div>
 
- <div id="chart0" >
+
+<div id="chart_start">
    </div>
 
  <div id="chart1" >
@@ -122,6 +163,24 @@ var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr( "xmlns",'xlink="http://www.w3.org/1999/xlink"')
 
+// CAŁA GRAFIKA
+var svg_start=d3.select("#chart_start")  
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom+250)
+        .attr("id","svg_chart_start")
+
+// OBSZAR WYKRESU
+var g_start= svg_start.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        
+
+g_start.append("text")
+.attr("x", width/2)
+.attr("y", height/2)
+.text("WhyR?")
+.style("font-size", "40px")
+.attr("text-anchor", "middle")
 
 //********************************************************************************* TYTUŁY, ŹRÓDŁO
 
@@ -158,25 +217,30 @@ zakladki.on("click",function(d){
 
     if( d == "ogólne" ){
 
-
+        d3.select("#svg_chart_start").remove()
         d3.select("#svg_chart1").remove()
         d3.select("#svg_chart2").remove()
          d3.select("#tooltip").remove()
 
-        var c = d3.select("#svg_chart0");
-        
+         var c = d3.select("#chart0")
+
         if(c[0][0] == null){
-
-        //stworzWykresOgolny();
-
+       var c = d3.select("body").append("div").attr("id","chart0")
+        c.append("img").attr("src","infografika.svg")
+        .attr("onerror","this.src='infografika.png'")
+        .attr("align","middle")
+        
         }
 
+
+          
 
     }
     else if( d == "warsztaty" ){
 
+        d3.select("#svg_chart_start").remove()
         d3.select("#svg_chart2").remove()
-         d3.select("#svg_chart0").remove()
+         d3.select("#chart0").remove()
             d3.select("#tooltip").remove()
 
 
@@ -192,9 +256,9 @@ zakladki.on("click",function(d){
 
     else if( d == "pakiety" ){
 
-
+         d3.select("#svg_chart_start").remove()
         d3.select("#svg_chart1").remove()
-         d3.select("#svg_chart0").remove()
+         d3.select("#chart0").remove()
             d3.select("#tooltip").remove()
 
         var c = d3.select("#svg_chart2");
@@ -215,7 +279,13 @@ zakladki.on("click",function(d){
 
 
 stworzWykresPakiety = function(){
-  var margin = {top: 140, right: 60, bottom: 60, left: 60};
+
+
+
+
+//********************************************************************************* USTAWIENIA OBSZARU RYSOWANIA
+
+var margin = {top: 140, right: 60, bottom: 60, left: 60};
 
 var width = 980 - margin.left - margin.right,
     height = 560 - margin.top - margin.bottom;
@@ -226,6 +296,7 @@ var svg=d3.select("#chart2")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .attr("id", "svg_chart2")
+
 // OBSZAR WYKRESU
 var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -233,10 +304,10 @@ var g = svg.append("g")
 
 
     // padding between nodes
- var   padding = 2,
-   minRadius = 1,
-    maxRadius = 80,
-    numberOfNodes = dane.length;
+   var   padding = 6,
+    minRadius = 10,
+    maxRadius = 90,
+    numberOfNodes = danePakiety.length;
 
 
 
@@ -272,6 +343,62 @@ var zrodlo = tytuly.append("text")
               .style("font-size", "10px") 
               .text("Źródło: WhyR - ankiety, RDocumentation");
 
+
+
+var pomoc = svg.append("g").attr("class", "pomoc")
+              .attr("transform","translate(0,10)")
+
+ var pomoc_kolko =    pomoc.append("circle")
+                        .attr("cx", margin.left+width/2)             
+                        .attr("cy", (margin.top)*(1/3))
+                        .attr("r", 10)
+                        .attr("fill", "white")
+                        .style("stroke", "grey")
+                        .style("stroke-width", "2px")
+
+  var pomoc_tekst =   pomoc.append("text")
+                        .attr("x", margin.left+width/2)             
+                        .attr("y", (margin.top)*(1/3)+6)
+                        .style("stroke", "none")
+                        .style("fill", "grey")
+                        .text("?")
+                        .attr("text-anchor", "middle")
+                        .style("font-size", "18px")
+                        .style("font-weight", "bold")
+                        .style("pointer-events", "none")
+
+var tooltipki0=d3.select("#chart2").append("div").attr("id", "tooltip0").style("opacity",0)
+
+  pomoc_kolko.on("mouseover",function(d){
+    
+     d3.select(this).style("stroke", "red")
+      pomoc_tekst.style("fill", "red")
+
+       tooltipki0.html( "<b>" + "Szczegóły" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+         "Dwukrotne kliknięcie na nazwę pakietu powoduje przejście do strony" + "<br/>"+
+         "z informacjami nt. tego pakietu."
+
+
+           )
+      .style("left", d3.event.pageX + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
+      .style("top", d3.event.pageY + "px")
+      .transition()
+      .duration(300)
+      .style("opacity",1);
+  })
+  .on("mouseout", function(d){
+
+      d3.select(this).style("stroke", "grey")
+      pomoc_tekst.style("fill", "grey")
+
+
+      tooltipki0
+      .transition()
+      .duration(300)
+      .style("opacity", 0);
+              
+  })
 //********************************************************************************* SKALE
 
 
@@ -283,30 +410,74 @@ var loading = svg.append("text")
   .text("Generowanie wykresu...");
 
 var x = d3.scale.linear()
-  .domain( [0, d3.max(dane, function(d){ return d.doswiadczenie_R_mean;})] )
+  .domain( [0, d3.max(danePakiety, function(d){ return d.doswiadczenie_R_mean;})] )
   .range( [0, width ] );
 
 
-
 var xAxis = d3.svg.axis()
-  .scale(x);
+                    .scale(x)
+                    .orient("bottom")
+                    .outerTickSize(0)
+                    .innerTickSize(0) 
+                    .tickPadding(10)
+                    
+
+
+
+
 
 
   var skalaR = d3.scale.sqrt()
   skalaR.range([minRadius,  maxRadius]);
 
-  skalaR.domain( [ 0,  d3.max(dane, function(d){ return d.Freq;}) ] ) 
+  skalaR.domain( [ 0,  d3.max(danePakiety, function(d){ return d.Freq;}) ] ) 
+
+  var skalaKolor = d3.scale.ordinal()
+  skalaKolor.range(["#A7DBD8", "#F38630"]);
+  skalaKolor.domain( [ true, false ] ) 
+
+
+var skalaCzcionka = d3.scale.linear()
+  .domain( [d3.min(danePakiety, function(d){ return d.Freq;}), d3.max(danePakiety, function(d){ return d.Freq;})] )
+  .range( [10, 14] );
+
+
+
+//****************************************************** strzalka osi
+
+
+var defs = svg.append("defs")
+
+    defs.append("marker")
+        .attr({
+          "id":"arrow_poz",
+          "viewBox":"0 -5 10 10",
+          "refX":5,
+          "refY":0,
+          "markerWidth":4,
+          "markerHeight":4,
+          "orient":"0"
+        })
+        .append("path")
+          .attr("d", "M0,-5L10,0L0,5")
+          .attr("class","arrowHead")
+          .style("stroke","grey")
+           .style("fill","grey")
 
 
 
 
 
-// Create random node data.
-var data = dane.map(function(d) {
+// przekształcanie danych
+var data = danePakiety.map(function(d) {
   var value = d.doswiadczenie_R_mean,
-      size =  skalaR(d.Freq),
+       size =  skalaR(d.Freq),
+       freq = d.Freq,
+       url = d.url
        name = d.pakiety,
-      datum = {value: value, size: size, name: name};
+       kolor = skalaKolor(d.dosw),
+       analiza = d.doswiadczenie_analiza_mean
+      datum = {value: value, size: size, name: name, kolor: kolor, freq:freq, url:url, analiza:analiza};
   return datum;
 });
 
@@ -318,7 +489,7 @@ var nodes = data.map(function(node, index) {
     idealradius: node.size,
     radius: 0,
     // Give each node a random color.
-    color: '#ff7f0e',
+    color: node.kolor,
     // Set the node's gravitational centerpoint.
     idealcx: x(node.value),
     idealcy: height / 2,
@@ -326,13 +497,17 @@ var nodes = data.map(function(node, index) {
     // Add some randomization to the placement;
     // nodes stacked on the same point can produce NaN errors.
     y: height / 2 + Math.random(),
-    name: node.name
+    name: node.name,
+    freq: node.freq,
+    url: node.url,
+    analiza: node.analiza,
+    analizaR: node.value
   };  
 });
 
 var force = d3.layout.force()
   .nodes(nodes)
-  .size([width, height])
+  .size([width, height*7/10])
   .gravity(0)
   .charge(0)
   .on("tick", tick)
@@ -343,6 +518,14 @@ var force = d3.layout.force()
  * On a tick, apply custom gravity, collision detection, and node placement.
  */
 function tick(e) {
+
+
+  /*  node
+      .each(gravity(dampenedAlpha))
+      .each(collide(jitter))
+      .attr("transform", (d) -> "translate(#{d.x},#{d.y})")
+*/
+
   for ( i = 0; i < nodes.length; i++ ) {
     var node = nodes[i];
     /*
@@ -371,6 +554,9 @@ function gravity(alpha) {
     return d;
   };
 }
+
+
+ 
 
 /**
  * On a tick, resolve collisions between nodes.
@@ -403,6 +589,9 @@ function collide(alpha) {
   };
 }
 
+
+
+
 /**
  * Run the force layout to compute where each node should be placed,
  * then replace the loading text with the graph.
@@ -412,27 +601,57 @@ function renderGraph() {
   // The ideal number of times scales with graph complexity.
   // Of course, don't run too long—you'll hang the page!
   force.start();
+
+
   for (var i = 100; i > 0; --i) force.tick();
-  force.stop();
+ force.stop();
 
-  g.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," +  height  + ")")
-    .call(xAxis);
 
-     var tooltipki=d3.select("#chart2").append("div").attr("id", "tooltip").style("opacity",0)
 
-  var circle = g.selectAll("circle")
-    .data(nodes)
-  .enter().append("circle")
+  var xAxisG = g.append("g")
+                  .attr("class", "axis x") 
+                  .attr("transform", "translate(0," + height + ")")
+
+  // tytul osi X
+  xAxisG.append("text")
+        .attr("text-anchor", "end")
+        .attr("x", width)
+        .attr("y", margin.bottom*(2/3))
+        .text("Średnie doświadczenie związane z pakietem R [lata]");
+
+
+      xAxisG.call(xAxis);
+
+svg.selectAll(".axis.x path")
+.attr("marker-end","url(#arrow_poz)")
+
+
+
+
+  var tooltipki=d3.select("#chart2").append("div").attr("id", "tooltip").style("opacity",0)
+
+  var grupy = g.selectAll(".nodes_bubble g")
+                .data(nodes)
+                .enter()
+                .append("g")
+                .attr("class", "nodes_bubble")
+
+  var circle = grupy.append("circle")
     .style("fill", function(d) { return d.color; })
+    .style("stroke", "grey")
     .attr("cx", function(d) { return d.x} )
     .attr("cy", function(d) { return d.y} )
     .attr("r", function(d) { return d.radius} )
+    .style("cursor", "pointer")
+    .attr("class", function(d){ return "bubble " + d.name.replace(/\./ig,"_");})
     .on("mouseover", function(d){
 
 
-      tooltipki.html( "<b>" + d.name +"</b>" + "<br/>"
+      tooltipki.html( "<b>" + d.name +"</b>" + "<br/>" +
+         ""   + "<br/>" +
+        "liczba osób: " + d.freq + "<br/>" +
+        "średnie dośw. w R: " + d.analizaR.toFixed(1) + "<br/>" +
+        "średnie dośw. w analizach: " + d.analiza.toFixed(1) + "<br/>"
 
            )
       .style("left", (d3.event.pageX ) + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
@@ -458,7 +677,7 @@ function renderGraph() {
       d3.select(this)
         .transition()
         .duration(300)
-        .style("stroke-width", "0.5px");
+        .style("stroke-width", "1px");
 
       tooltipki
       .transition()
@@ -468,17 +687,103 @@ function renderGraph() {
  
 
       }
-    );
+    )
+
+.on("dblclick", function(d){
+
+    var url = d.url;
+      
+        window.location = url; 
+
+})
+
+
+var labelki = grupy.append("text")
+              .attr("x", function(d){ 
+
+                         var a = d.name
+                         a = "."+a.replace(/\./ig,"_");
+                         var kolko = d3.selectAll(a)
+                         
+
+                          return kolko.attr("cx");
+                        
+                        })
+              .attr("y", function(d){ 
+
+                         var a = d.name
+                         a = "."+a.replace(/\./ig,"_");
+                         var kolko = d3.selectAll(a)
+                         
+
+                          return kolko.attr("cy");
+                         
+                        })
+              .style("font-size", function(d){ return skalaCzcionka(d.freq)+"px";}) 
+              //.style("font-weight", "bold") 
+              .attr("text-anchor", "middle")
+              .style("pointer-events", "none")
+              .text(function(d){return  d.name;});
+
+
+// LEGENDA KOLOR
+
+var legendaKolor = svg.append("g")
+    .attr("class", "legend kolor")
+    .attr("transform", "translate(" + (width*4/5 + margin.left)  + "," + margin.top*2/3 + ")") 
+
+ var legendaKolorEtykiety = legendaKolor.selectAll("g")
+                      .data([true,false])
+                      .enter()
+                      .append("g")
+    
+  legendaKolorEtykiety.append("circle")
+              .attr("fill", function(d){ return skalaKolor(d);})
+              .style("stroke", "grey")
+              .attr("cx", 0)
+              .attr("cy", function(d,i){ return 35*i; })
+              .attr("r",8)
+
+  legendaKolorEtykiety.append("text")
+              .attr("x", 20)
+              .attr("y", function(d,i){ return 35*i+4; }) 
+              .text(function(d){
+
+                  if(d){
+                    return "większe w analizach";
+                  }else{
+                    return "większe lub równe w pakiecie R";
+                  }
+
+                ;})
+
+
+legendaKolor.append("text")
+  .attr("x",-8)
+    .attr("y", -30)
+    .text("Doświadczenie użytkowników pakietu")
+    
+
 
   loading.remove();
 }
 // Use a timeout to allow the rest of the page to load first.
-setTimeout(renderGraph, 0);
+setTimeout(renderGraph, 1);
+
+
+// na podstawie: http://bl.ocks.org/ericandrewlewis/dc79d22c74b8046a5512
+
+
+
+
+
+
 
 }
 
 
 stworzWykresWarsztaty = function(){
+
 
 
 
@@ -504,6 +809,7 @@ var svg=d3.select("#chart1")
 var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr( "xmlns",'xlink="http://www.w3.org/1999/xlink"')
+
 
 
 
@@ -536,7 +842,7 @@ var skalaZajete = d3.scale.linear();
 
 var skalaStatystyki = d3.scale.linear();
     skalaStatystyki.domain([0,100])
-    skalaStatystyki.range([0, dlugoscStatystyki])
+    skalaStatystyki.range([1, dlugoscStatystyki])
 
 
 //********************************************************************************* TYTUŁY, ŹRÓDŁO
@@ -561,6 +867,73 @@ var zrodlo = tytuly.append("text")
               .attr("y", height+margin.top+ margin.bottom*(2/3))
               .style("font-size", "10px") 
               .text("Źródło: WhyR - ankiety");
+
+var pomoc = svg.append("g").attr("class", "pomoc")
+              .attr("transform","translate(0,10)")
+
+ var pomoc_kolko =    pomoc.append("circle")
+                        .attr("cx", margin.left+widthBox)             
+                        .attr("cy", (margin.top)*(1/3))
+                        .attr("r", 10)
+                        .attr("fill", "white")
+                        .style("stroke", "grey")
+                        .style("stroke-width", "2px")
+
+  var pomoc_tekst =   pomoc.append("text")
+                        .attr("x", margin.left+widthBox)             
+                        .attr("y", (margin.top)*(1/3)+6)
+                        .style("stroke", "none")
+                        .style("fill", "grey")
+                        .text("?")
+                        .attr("text-anchor", "middle")
+                        .style("font-size", "18px")
+                        .style("font-weight", "bold")
+                        .style("pointer-events", "none")
+
+var tooltipki0=d3.select("#chart1").append("div").attr("id", "tooltip0").style("opacity",0)
+
+  pomoc_kolko.on("mouseover",function(d){
+    
+     d3.select(this).style("stroke", "red")
+      pomoc_tekst.style("fill", "red")
+
+       tooltipki0.html( "<b>" + "Szczegóły" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+         "Każdy uczestnik konferencji może zapisać się na 2 warsztaty:"  + "<br/>"+
+         "jeden poranny, drugi popołudniowy. Ścieżki między warsztatami" + "<br/>"+ 
+         "pokazują jaki warsztat popołudniowy wybierały najczęściej"  + "<br/>"+
+         "osoby z danego warsztatu porannego."+ "<br/>"+
+         ""  + "<br/>"+
+         "Liczby podane po plusie przy popularności warsztatu oznaczają" + "<br/>"+
+         "liczbę osób na liście rezerwowej." + "<br/>"+
+         "" + "<br/>"+
+         "Kliknięcie na nazwę warsztatu powoduje przejście do strony" + "<br/>"+
+         "z informacjami nt. tego warsztatu."
+
+
+           )
+      .style("left", d3.event.pageX + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
+      .style("top", d3.event.pageY + "px")
+      .transition()
+      .duration(300)
+      .style("opacity",1);
+  })
+  .on("mouseout", function(d){
+
+      d3.select(this).style("stroke", "grey")
+      pomoc_tekst.style("fill", "grey")
+
+
+      tooltipki0
+      .transition()
+      .duration(300)
+      .style("opacity", 0);
+              
+  })
+                 
+
+
+
 
 
 //********************************************************************************* TWORZENIE PROSTOKĄTA
@@ -714,7 +1087,7 @@ dodajStatystyki = function(sesja_grupy){
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_R_0_2);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -727,7 +1100,7 @@ dodajStatystyki = function(sesja_grupy){
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_R_2_6);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -740,7 +1113,7 @@ dodajStatystyki = function(sesja_grupy){
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_R_6_wiecej);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -793,7 +1166,7 @@ dodajStatystyki = function(sesja_grupy){
 // labelki
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect*3 )  
+                    .attr("x", widthBox/4 + paddingRect*2 )  
                     .attr("y", -paddingRect*2 )             
                     .text("podane doświadczenie w latach:" )
                     .style("text-anchor", "middle")
@@ -836,7 +1209,7 @@ sesja_statystyki.append("text")
                         .style("opacity", 1)
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 - paddingRect*4 )
+                    .attr("x", widthBox/4 - paddingRect*3 )
                     .attr("y", heightBox/5*3+paddingSlupki*3)              
                     .text(" w R")
                     .style("text-anchor", "start")
@@ -859,7 +1232,7 @@ sesja_statystyki.append("text")
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_0_2);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -872,7 +1245,7 @@ sesja_statystyki.append("text")
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_2_6);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -885,7 +1258,7 @@ sesja_statystyki.append("text")
                     .style("stroke-width", "0.5px")
                     .attr("height", heightBox*1/5)
                     .attr("width",function(d) {return skalaStatystyki(d.analizy_6_wiecej);})
-                    .style("fill", "#a7e3ef")
+                    .style("fill", "#3788b7")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
@@ -938,10 +1311,33 @@ sesja_statystyki.append("text")
 // labelki
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect*6 )
+                    .attr("x", widthBox/4 + paddingRect*5 )
                     .attr("y", heightBox/5*3+paddingSlupki*3)              
                     .text(" w analizie danych")
                     .style("text-anchor", "start")
+                    .attr("dominant-baseline", "hanging")
+                      .style("fill", "grey")
+                       .style("opacity", 0)
+                        .transition()
+                        .style("opacity", 1)
+
+sesja_statystyki.append("text")
+                    .attr("x", widthBox - paddingRect*2 )  
+                    .attr("y", -paddingRect*2 )           
+                    .text("osób z mgr/dr:")
+                    .style("text-anchor", "end")
+                    .attr("dominant-baseline", "hanging")
+                      .style("fill", "grey")
+                       .style("opacity", 0)
+                        .transition()
+                        .style("opacity", 1)
+
+sesja_statystyki.append("text")
+                    .attr("x", widthBox - paddingRect*3 )  
+                     .attr("y", heightBox/5+paddingSlupki)              
+                    .text(function(d){ return d.st_nauk.toFixed(1)+"%"})
+                    .style("text-anchor", "end")
+                    .style("font-size", "20px")
                     .attr("dominant-baseline", "hanging")
                       .style("fill", "grey")
                        .style("opacity", 0)
@@ -977,7 +1373,7 @@ var sesja_popoludnie_grupy = sesja_popoludnie.selectAll("g")
 
 
     sesja_popoludnie_grupy.append("rect")
-                          .style("stroke", "black")
+                          .style("stroke", "grey")
                           .attr("height", heightBox)
                           .attr("width",widthBox)          
                           .style("fill", "none")
@@ -1050,36 +1446,36 @@ sesja_popoludnie_zajetosc.append("text")
 
 //**************************************************************************** tworzenie strzalek 
 
-  var zwrocWspolrzedneTransformacji = function(element_g){
 
-    if( element_g == null ){ return element_g;}
-    else{
-    var wspol = element_g.attr("transform").replace("translate(","");
-
-        wspol = wspol.replace(")","")
-        wspol = wspol.split(",")
-        x =+ wspol[0]
-        y =+ wspol[1]
-
-        return [x,y];
-      }
-  }
+  var rysujStrzalke = function(source, target, kiedy) {
 
 
+ 
+    var height = 0;
+    var y_source =0;
+    var y_target =0;
+    source  = dane.filter(function(d){ return d.warsztat == source})
+    target  = dane.filter(function(d){ return d.warsztat == target})
 
-  var rysujStrzalke = function(source, target) {
+    if(kiedy == "zwin"){
 
-    var source_g = g.select("g." + podkreslString(source))
-    var target_g = g.select("g." + podkreslString(target))
+      height = heightBox;
 
-    var source_g_xy = zwrocWspolrzedneTransformacji(source_g);
-    var target_g_xy = zwrocWspolrzedneTransformacji(target_g);
+    }
+    else if(kiedy =="rozwin"){
 
-    var source_rect = g.select("rect." + podkreslString(source))
-    var target_rect = g.select("rect." + podkreslString(target))
+      height = heightBox2;
 
-    var source_rect_wh =[ parseFloat(source_rect.attr("width")), parseFloat(source_rect.attr("height"))  ]
-    var target_rect_wh =[ parseFloat(target_rect.attr("width")), parseFloat(target_rect.attr("height")) ]
+    }
+
+    y_source = (paddingBox + height)*( source[0].pozycja -1 ) 
+    y_target = (paddingBox + height)*( target[0].pozycja -1 ) 
+
+    var source_g_xy = [0, y_source]
+    var target_g_xy = [widthBox+paddingBlock, y_target]
+
+    var source_rect_wh =[ widthBox, height  ]
+    var target_rect_wh =[ widthBox, height ]
 
     var curvature = .5,
          xl = source_g_xy[0] + source_rect_wh[0],
@@ -1104,11 +1500,11 @@ sesja_popoludnie_zajetosc.append("text")
 
 var strzalki = g.selectAll(".link")
                     .data(dane
-                          .filter(function(d){ return d.sciezka != "brak"}))
+                      .filter(function(d){ return d.sciezka != "brak"}))
                     .enter()
                     .append("path")
                     .attr("class", "link")
-                    .attr("d", function(d){return rysujStrzalke(d.warsztat, d.sciezka);})
+                    .attr("d", function(d){return rysujStrzalke(d.warsztat, d.sciezka, "zwin");})
                     .style("stroke-width", "10px")
                     .style("stroke", function(d){ return skalaKolor(d.warsztat); })
 
@@ -1127,7 +1523,7 @@ var przycisk = g.append("g").attr("id", "przycisk").attr("transform", "translate
          przycisk.append("text")
                           .attr("x", paddingRect/2)             
                           .attr("y", paddingRect/2)
-                          .text("Zwiń/Rozwiń statystyki")
+                          .text("Rozwiń/Zwiń statystyki")
                           .attr("dominant-baseline", "hanging")
                           .style("text-anchor", "start")
                           .style("pointer-events", "none")
@@ -1152,15 +1548,10 @@ var czyStat = false;
         d3.selectAll(".warsztaty rect.glowna")
         .transition()
         .attr("height",heightBox2)
-        .each("end", function() {        // <-- Executes at end of transition
-                ile= ile-1;
-                if(ile == 0){
-                  
-                      strzalki
+
+         strzalki
                      .transition()
-                      .attr("d", function(d){return rysujStrzalke(d.warsztat, d.sciezka);})
-                }
-             });
+                      .attr("d", function(d,i){return rysujStrzalke(d.warsztat, d.sciezka, "rozwin");})     
 
 
         dodajStatystyki(sesja_rano_grupy);
@@ -1181,15 +1572,10 @@ var czyStat = false;
         d3.selectAll(".warsztaty rect.glowna")
         .transition()
         .attr("height",heightBox)
-        .each("end", function() {        // <-- Executes at end of transition
-                ile= ile-1;
-                if(ile == 0){
-                 
-                      strzalki
+      
+          strzalki
                      .transition()
-                      .attr("d", function(d){return rysujStrzalke(d.warsztat, d.sciezka);})
-                }
-             });
+                      .attr("d", function(d,i){return rysujStrzalke(d.warsztat, d.sciezka, "zwin");})     
 
         g.selectAll(".statystyki").remove()
 
@@ -1206,10 +1592,11 @@ labelWiecej_popoludnie
   .on("mouseover", function(d){
 
 
-      tooltipki.html( "<b>" + "Zainteresowania" +"</b>" + "<br/>"+
-          "1. "+ d.zaint1 + " " + d.zaint1_ile.toFixed(0)+ "%"  + "<br/>" +
-          "2. "+ d.zaint2 + " " + d.zaint2_ile.toFixed(0)+ "%"  + "<br/>" +
-          "3. "+ d.zaint3 + " " + d.zaint3_ile.toFixed(0)+ "%"  + "<br/>"
+      tooltipki.html( "<b>" + "Zainteresowania uczestników" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+          "<b>1.</b> "+ d.zaint1 + ": " + d.zaint1_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>2.</b> "+ d.zaint2 + ": " + d.zaint2_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>3.</b> "+ d.zaint3 + ": " + d.zaint3_ile.toFixed(0)+ "% osób"  + "<br/>"
          
 
 
@@ -1243,10 +1630,15 @@ labelWiecej_rano
   .on("mouseover", function(d){
 
 
-      tooltipki.html( "<b>" + "Zainteresowania" +"</b>" + "<br/>"+
-          "1. "+ d.zaint1 + " " + d.zaint1_ile.toFixed(0)+ "%"  + "<br/>" +
-          "2. "+ d.zaint2 + " " + d.zaint2_ile.toFixed(0)+ "%"  + "<br/>" +
-          "3. "+ d.zaint3 + " " + d.zaint3_ile.toFixed(0)+ "%"  + "<br/>"
+     
+      tooltipki.html( "<b>" + "Zainteresowania uczestników" +"</b>" + "<br/>"+
+         "" +"<br/>"+
+          "<b>1.</b> "+ d.zaint1 + ": " + d.zaint1_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>2.</b> "+ d.zaint2 + ": " + d.zaint2_ile.toFixed(0)+ "% osób"  + "<br/>" +
+          "<b>3.</b> "+ d.zaint3 + ": " + d.zaint3_ile.toFixed(0)+ "% osób"  + "<br/>"
+         
+
+
            )
     .style("left", (d3.event.pageX-widthBox+2*paddingRect ) + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
       .style("top", (d3.event.pageY+2*paddingRect) + "px")
@@ -1272,8 +1664,8 @@ labelWiecej_rano
 
       }
     );
-}
 
+}
 </script>
 </body>
 
