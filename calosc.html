@@ -234,6 +234,8 @@ g_start
 
 // TYTUŁ I PODTYTUŁ
 
+
+
 var zakladkiTytuly = ["WhyR", "info", "warsztaty", "pakiety"]
 
 
@@ -244,7 +246,7 @@ var zakladki = pasek.selectAll(".zakladki text")
               .data(zakladkiTytuly)
               .enter()
               .append("text")
-              .attr("x", function(d,i){return width/4*(i+1)})  
+              .attr("x", function(d,i){return margin.left+ (width)/4*(i)})  
               .attr("text-anchor", "middle")           
               .attr("y", (margin.top)*(1/4))
               .style("font-size", "26px")  
@@ -387,7 +389,7 @@ stworzWykresPakiety = function(){
 var margin = {top: 140, right: 60, bottom: 60, left: 60};
 
 var width = 980 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+    height = 620 - margin.top - margin.bottom;
 
 // CAŁA GRAFIKA
 var svg=d3.select("#chart2")  
@@ -540,11 +542,11 @@ var nodes = data.map(function(node, index) {
     color: node.kolor,
     // Set the node's gravitational centerpoint.
     idealcx: x(node.value),
-    idealcy: height*2 / 5, // zmieniam z height/2
+    idealcy: height/2-50, // zmieniam z height/2
     x: x(node.value),
     // Add some randomization to the placement;
     // nodes stacked on the same point can produce NaN errors.
-    y: height*2/ 5 + Math.random(), // zmieniam z height/2
+    y: height/2-50 + Math.random(), // zmieniam z height/2
     name: node.name,
     freq: node.freq,
     url: node.url,
