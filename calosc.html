@@ -389,7 +389,7 @@ stworzWykresPakiety = function(){
 var margin = {top: 140, right: 60, bottom: 60, left: 60};
 
 var width = 980 - margin.left - margin.right,
-    height = 620 - margin.top - margin.bottom;
+    height = 650 - margin.top - margin.bottom;
 
 // CAŁA GRAFIKA
 var svg=d3.select("#chart2")  
@@ -405,8 +405,8 @@ var g = svg.append("g")
 
 
     // padding between nodes
-   var   padding = 6,
-    minRadius = 10,
+   var   padding = 4,
+    minRadius = 8,
     maxRadius = 85,
     numberOfNodes = danePakiety.length;
 
@@ -549,11 +549,11 @@ var nodes = data.map(function(node, index) {
     color: node.kolor,
     // Set the node's gravitational centerpoint.
     idealcx: x(node.value),
-    idealcy: height/2-50, // zmieniam z height/2
+    idealcy: height/2 -30, // zmieniam z height/2
     x: x(node.value),
     // Add some randomization to the placement;
     // nodes stacked on the same point can produce NaN errors.
-    y: height/2-50 + Math.random(), // zmieniam z height/2
+    y: height/2 - 30 + Math.random(), // zmieniam z height/2
     name: node.name,
     freq: node.freq,
     url: node.url,
@@ -564,7 +564,7 @@ var nodes = data.map(function(node, index) {
 
 var force = d3.layout.force()
   .nodes(nodes)
-  .size([width, height/2]).resume()
+  .size([width, 0]) // z height na 0
   .gravity(0)
   .charge(0)
   .on("tick", tick)
