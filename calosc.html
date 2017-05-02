@@ -151,6 +151,8 @@ text {
 
 //********************************************************************************* USTAWIENIA OBSZARU RYSOWANIA
 
+
+
 var margin = {top: 140, right: 60, bottom: 60, left: 60};
 
 var width = 980 - margin.left - margin.right,
@@ -167,12 +169,16 @@ var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr( "xmlns",'xlink="http://www.w3.org/1999/xlink"')
 
+
+function rysujEkranGlowny(){
+
 // CAŁA GRAFIKA
 var svg_start=d3.select("#chart_start")  
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom+250)
         .attr("id","svg_chart_start")
+
 
 // OBSZAR WYKRESU
 var g_start= svg_start.append("g")
@@ -220,31 +226,25 @@ g_start
 .style("font-size", "8px")
 .attr("text-anchor", "middle")
 
+}
+
 //********************************************************************************* TYTUŁY, ŹRÓDŁO
 
 
 
 // TYTUŁ I PODTYTUŁ
-var tytulik = "WhyR:";
-var zakladkiTytuly = ["info", "warsztaty", "pakiety"]
+
+var zakladkiTytuly = ["WhyR", "info", "warsztaty", "pakiety"]
 
 
 var pasek = svg.append("g")
                  .attr("class", "tytuly")
 
-pasek.append("text")
-              .attr("x", margin.left)             
-              .attr("y", (margin.top)*(1/4))
-              .style("font-size", "28px")  
-              .style("font-weight", "bold")  
-              .text(tytulik);
-
-
 var zakladki = pasek.selectAll(".zakladki text")
               .data(zakladkiTytuly)
               .enter()
               .append("text")
-              .attr("x", function(d,i){return width/3*(i+1)})  
+              .attr("x", function(d,i){return width/4*(i+1)})  
               .attr("text-anchor", "middle")           
               .attr("y", (margin.top)*(1/4))
               .style("font-size", "26px")  
@@ -257,10 +257,45 @@ var zakladki = pasek.selectAll(".zakladki text")
 zakladki.on("click",function(d){
 
 
-    if( d == "info" ){
+    if( d == "WhyR"){
+
 
        d3.select(".zakladki.warsztaty").style("fill", "black")
        d3.select(".zakladki.pakiety").style("fill", "black")
+       d3.select(".zakladki.info").style("fill", "black")
+
+       d3.select("#chart0").remove()
+        d3.select("#svg_chart0").remove()
+        d3.select("#svg_chart1").remove()
+        d3.select("#svg_chart2").remove()
+         d3.select("#tooltip").remove()
+
+         var c = d3.select("#svg_chart_start")
+
+        if(c[0][0] == null){
+          
+
+        rysujEkranGlowny();
+        
+        d3.select(this).style("fill", "red")
+        }
+
+
+ 
+
+
+    }
+
+
+
+      
+
+
+    else if( d == "info" ){
+
+       d3.select(".zakladki.warsztaty").style("fill", "black")
+       d3.select(".zakladki.pakiety").style("fill", "black")
+       d3.select(".zakladki.WhyR").style("fill", "black")
 
         d3.select("#svg_chart_start").remove()
         d3.select("#svg_chart1").remove()
@@ -270,6 +305,8 @@ zakladki.on("click",function(d){
          var c = d3.select("#chart0")
 
         if(c[0][0] == null){
+          
+
        var c = d3.select("body").append("div").attr("id","chart0")
         c.append("img").attr("src","infografika.svg")
         .attr("onerror","this.src='infografika.png'")
@@ -287,6 +324,7 @@ zakladki.on("click",function(d){
 
        d3.select(".zakladki.info").style("fill", "black")
        d3.select(".zakladki.pakiety").style("fill", "black")
+       d3.select(".zakladki.WhyR").style("fill", "black")
 
         d3.select("#svg_chart_start").remove()
         d3.select("#svg_chart2").remove()
@@ -309,8 +347,9 @@ zakladki.on("click",function(d){
 
        d3.select(".zakladki.warsztaty").style("fill", "black")
        d3.select(".zakladki.info").style("fill", "black")
+       d3.select(".zakladki.WhyR").style("fill", "black")
 
-         d3.select("#svg_chart_start").remove()
+        d3.select("#svg_chart_start").remove()
         d3.select("#svg_chart1").remove()
          d3.select("#chart0").remove()
             d3.select("#tooltip").remove()
@@ -326,6 +365,12 @@ zakladki.on("click",function(d){
 
 
 })
+
+
+
+
+rysujEkranGlowny();
+
 
 
 
@@ -510,7 +555,7 @@ var nodes = data.map(function(node, index) {
 
 var force = d3.layout.force()
   .nodes(nodes)
-  .size([width, height/2])
+  .size([width, height/2]).resume()
   .gravity(0)
   .charge(0)
   .on("tick", tick)
@@ -726,8 +771,18 @@ var labelki = grupy.append("text")
               //.style("font-weight", "bold") 
               .attr("text-anchor", "middle")
               .style("pointer-events", "none")
-              .text(function(d){return  d.name;});
+              .text(function(d){return  d.name;})
+              .attr("dy", ".3em")
+              .each(function(d){ // usuwanie napisów które są za dlugie
 
+                    var dl = d3.select(this)[0][0].getComputedTextLength()
+                    
+                    var r = d3.select(".bubble."+d.name.replace(/\./ig,"_")).attr("r")*2
+                    if( (dl-8) > r){
+                     d3.select(this).remove()
+                    }
+
+              }) 
 
 // LEGENDA KOLOR
 
@@ -823,7 +878,7 @@ var tooltipki0=d3.select("#chart2").append("div").attr("id", "tooltip0").style("
 
   loading.remove();
 }
-// Use a timeout to allow the rest of the page to load first.
+
 setTimeout(renderGraph, 1);
 
 
@@ -854,11 +909,13 @@ var margin = {top: 140, right: 60, bottom: 60, left: 60};
 var width = 980 - margin.left - margin.right,
     height = 1620 - margin.top - margin.bottom;
 
+var heightStart = 800 - margin.top - margin.bottom;
+
 // CAŁA GRAFIKA
 var svg=d3.select("#chart1")  
         .append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("height", heightStart + margin.top + margin.bottom)
         .attr("id", "svg_chart1")
 
 // OBSZAR WYKRESU
@@ -920,7 +977,7 @@ var podtytul = tytuly.append("text")
 
 var zrodlo = tytuly.append("text")
               .attr("x", margin.left)             
-              .attr("y", height+margin.top+ margin.bottom*(2/3))
+              .attr("y", heightStart+margin.top+ margin.bottom*(2/3))
               .style("font-size", "10px") 
               .text("Źródło: WhyR - ankiety");
 
@@ -1577,6 +1634,10 @@ var czyStat = false;
       czyStat = !czyStat;
       if(czyStat){
 
+        // zmiana rozmiaru okna głownego
+        svg.attr("height", height + margin.top + margin.bottom)
+        zrodlo.attr("y", height+margin.top+ margin.bottom*(2/3))
+
         d3.select(this).style("stroke", "red");
         d3.selectAll(".warsztaty.rano g.glowna")
         .transition()
@@ -1600,6 +1661,9 @@ var czyStat = false;
           }
 
       if(!czyStat){
+
+        svg.attr("height", heightStart + margin.top + margin.bottom)
+        zrodlo.attr("y", heightStart+margin.top+ margin.bottom*(2/3))
          
         d3.select(this).style("stroke", "black");
         d3.selectAll(".warsztaty.rano g.glowna")
