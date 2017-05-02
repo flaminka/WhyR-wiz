@@ -222,7 +222,7 @@ g_start
 .append("text")
 .attr("x", width-margin.left)
 .attr("y", height +300)
-.text("Projekt: Ewa Baranowska, KN Data Science PW")
+.text("Autor: Ewa Baranowska, KN Data Science PW")
 .style("font-size", "8px")
 .attr("text-anchor", "middle")
 
@@ -444,6 +444,13 @@ var zrodlo = tytuly.append("text")
               .style("font-size", "10px") 
               .text("Źródło: WhyR - ankiety, RDocumentation");
 
+ var autor = tytuly.append("text")
+              .attr("x", margin.left+ width)         
+              .attr("y", height+margin.top+ margin.bottom*(2/3))
+              .attr("text-anchor", "end")
+              .style("font-size", "8px")
+              .text("Autor: Ewa Baranowska, KN Data Science PW");   
+
 
 
 var pomoc = svg.append("g").attr("class", "pomoc")
@@ -660,7 +667,7 @@ function renderGraph() {
 
   var xAxisG = g.append("g")
                   .attr("class", "axis x") 
-                  .attr("transform", "translate(0," + height + ")")
+                  .attr("transform", "translate(0," + (height-30) + ")")
 
   // tytul osi X
   xAxisG.append("text")
@@ -982,6 +989,17 @@ var zrodlo = tytuly.append("text")
               .attr("y", heightStart+margin.top+ margin.bottom*(2/3))
               .style("font-size", "10px") 
               .text("Źródło: WhyR - ankiety");
+
+var autor = tytuly.append("text")
+              .attr("x", margin.left+ width)         
+              .attr("y", heightStart+margin.top+ margin.bottom*(2/3))
+              .attr("text-anchor", "end")
+              .style("font-size", "8px")
+              .text("Autor: Ewa Baranowska, KN Data Science PW");
+
+
+
+
 
 var pomoc = svg.append("g").attr("class", "pomoc")
               .attr("transform","translate(0,10)")
@@ -1638,7 +1656,9 @@ var czyStat = false;
 
         // zmiana rozmiaru okna głownego
         svg.attr("height", height + margin.top + margin.bottom)
+
         zrodlo.attr("y", height+margin.top+ margin.bottom*(2/3))
+        autor.attr("y", height+margin.top+ margin.bottom*(2/3))
 
         d3.select(this).style("stroke", "red");
         d3.selectAll(".warsztaty.rano g.glowna")
@@ -1666,6 +1686,7 @@ var czyStat = false;
 
         svg.attr("height", heightStart + margin.top + margin.bottom)
         zrodlo.attr("y", heightStart+margin.top+ margin.bottom*(2/3))
+        autor.attr("y", heightStart+margin.top+ margin.bottom*(2/3))
          
         d3.select(this).style("stroke", "black");
         d3.selectAll(".warsztaty.rano g.glowna")

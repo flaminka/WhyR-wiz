@@ -16,9 +16,9 @@
    id="svg398"
    inkscape:version="0.92.0 r15299"
    sodipodi:docname="infografika.svg"
-   inkscape:export-filename="D:\SMAD - rok 2\Koło naukowe\WhyR\infografika2.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-filename="D:\SMAD - rok 2\Koło naukowe\WhyR\final\infografika.png"
+   inkscape:export-xdpi="102.58316"
+   inkscape:export-ydpi="102.58316">
   <defs
      id="defs392">
     <inkscape:perspective
@@ -161,9 +161,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.1018121"
-     inkscape:cx="161.98972"
-     inkscape:cy="553.18526"
+     inkscape:zoom="0.74920737"
+     inkscape:cx="674.19466"
+     inkscape:cy="454.48031"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -2044,18 +2044,18 @@
        id="rect5846-5-0-4"
        width="59.739006"
        height="9.7390051"
-       x="174.85896"
-       y="282.24152" />
+       x="140.39822"
+       y="279.49463" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:6.61458349px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#c32a2b;fill-opacity:1;stroke:#c32a2a;stroke-width:0.26458332;stroke-opacity:0.99215686"
-       x="179.52731"
-       y="288.72351"
+       x="145.06657"
+       y="285.97662"
        id="text5684-9-9"><tspan
          sodipodi:role="line"
          id="tspan5787"
-         x="179.52731"
-         y="288.72351"
+         x="145.06657"
+         y="285.97662"
          style="font-size:4.23333311px;stroke-width:0.26458332">specjaliści jak i nowicjusze</tspan></text>
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#c32a2a;stroke-width:0.18509944;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.99215686"
@@ -2146,5 +2146,16 @@
          x="18.678097"
          y="57.691242"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11666656px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.26458332">*pytanie  wielokrotnego  wyboru</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.64444447px;line-height:6.61458254px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="208.36249"
+       y="292.76547"
+       id="text4925"><tspan
+         sodipodi:role="line"
+         id="tspan4923"
+         x="208.36249"
+         y="292.76547"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11666656px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.26458332">Autor: Ewa Baranowska, KN Data Science PW</tspan></text>
   </g>
 </svg>
