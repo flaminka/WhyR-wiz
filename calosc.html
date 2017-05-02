@@ -387,7 +387,7 @@ stworzWykresPakiety = function(){
 var margin = {top: 140, right: 60, bottom: 60, left: 60};
 
 var width = 980 - margin.left - margin.right,
-    height = 560 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
 // CAŁA GRAFIKA
 var svg=d3.select("#chart2")  
@@ -540,11 +540,11 @@ var nodes = data.map(function(node, index) {
     color: node.kolor,
     // Set the node's gravitational centerpoint.
     idealcx: x(node.value),
-    idealcy: height / 2,
+    idealcy: height*2 / 5, // zmieniam z height/2
     x: x(node.value),
     // Add some randomization to the placement;
     // nodes stacked on the same point can produce NaN errors.
-    y: height / 2 + Math.random(),
+    y: height*2/ 5 + Math.random(), // zmieniam z height/2
     name: node.name,
     freq: node.freq,
     url: node.url,
@@ -909,7 +909,7 @@ var margin = {top: 140, right: 60, bottom: 60, left: 60};
 var width = 980 - margin.left - margin.right,
     height = 1620 - margin.top - margin.bottom;
 
-var heightStart = 800 - margin.top - margin.bottom;
+var heightStart = 750 - margin.top - margin.bottom;
 
 // CAŁA GRAFIKA
 var svg=d3.select("#chart1")  
