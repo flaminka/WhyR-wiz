@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-  <title>WhyR?</title>
+  <title>Why R? 2017</title>
 
 
   <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
@@ -176,7 +176,7 @@ function rysujEkranGlowny(){
 var svg_start=d3.select("#chart_start")  
         .append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom+250)
+        .attr("height", height + margin.top + margin.bottom+600)
         .attr("id","svg_chart_start")
 
 
@@ -188,7 +188,7 @@ var g_start= svg_start.append("g")
 g_start.append("text")
 .attr("x", width/2)
 .attr("y", height/2)
-.text("WhyR?")
+.text("Why R 2017?")
 .style("font-size", "40px")
 .attr("text-anchor", "middle")
 
@@ -218,10 +218,51 @@ g_start
 .style("font-size", "30px")
 .attr("text-anchor", "middle")
 
-g_start
+
+/// opis
+
+var opis =g_start
 .append("text")
 .attr("x", width-margin.left)
 .attr("y", height +300)
+.style("font-size", "15px")
+.attr("dy",0)
+
+opis.append("tspan").attr("x",0).attr("dy", ".6em").text("Aby wziąć udział w konferencji Why R? 2017 należy zarejestrować się poprzez stronę whyr.pl. Przy rejestracji przyszły uczestnik konferencji")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").text("proszony jest o wypełnienie formularza zawierającego zarówno pola informacyjne (imię, nazwisko, mail, rok urodzenia, płeć, stopień naukowy,")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").text("miasto) jak i dodatkowe, opisujące jego doświadczenie związane z analizą i przetwarzaniem danych.")
+
+
+
+opis.append("tspan").attr("x",0).attr("dy", "3em").text("Wśród pól dodatkowych można znaleźć takie pola jak: obecne stanowisko, tematyka, którą się zajmuje, tematyka, którą się interesuje")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").text("(ankietowany ma możliwość wyboru spośród podanych 25 tematów lub podać własny), jak również technologie używane na co dzień czy też")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").text("doświadczenie w analizach i pakiecie R podawane w latach. Informacje te zostały podsumowane na infografice dostępnej w zakładce")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").html("&quot;infografika&quot;.")
+
+
+
+opis.append("tspan").attr("x",0).attr("dy", "3em").text("Dodatkowo uczestnik konferencji może zapisać się na 2 warsztaty (poranny i popołudniowy), przedstawiające różnorodne zastosowania")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").html("pakietu R. W zakładce &quot;warsztaty&quot; została umieszczona wizualizacja, dzięki której można zorientować się jakie grupy uczestników wybrały")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").html("dany warsztat i które warsztaty cieszą się największą popularnością.")
+
+
+
+opis.append("tspan").attr("x",0).attr("dy", "3em").html("Ostatnia zakładka &quot;pakiety&quot; przedstawia odpowiedzi ankietowanych na pytanie otwarte dotyczące używanych przez nich na co dzień pakietów")
+
+opis.append("tspan").attr("x",0).attr("dy", "1.2em").html("R-owych.")
+
+
+g_start
+.append("text")
+.attr("x", width-margin.left)
+.attr("y", height +650)
 .text("Autor: Ewa Baranowska, KN Data Science PW")
 .style("font-size", "8px")
 .attr("text-anchor", "middle")
@@ -236,7 +277,7 @@ g_start
 
 
 
-var zakladkiTytuly = ["WhyR", "info", "warsztaty", "pakiety"]
+var zakladkiTytuly = ["WhyR", "infografika", "warsztaty", "pakiety"]
 
 
 var pasek = svg.append("g")
@@ -246,11 +287,16 @@ var zakladki = pasek.selectAll(".zakladki text")
               .data(zakladkiTytuly)
               .enter()
               .append("text")
-              .attr("x", function(d,i){return margin.left+ (width)/4*(i)})  
+              .attr("x", function(d,i){return margin.left*2+ (width)/4*(i)})  
               .attr("text-anchor", "middle")           
               .attr("y", (margin.top)*(1/4))
               .style("font-size", "26px")  
-              .text(function(d){return d;})
+              .text(function(d){
+
+                if( d == "WhyR"){
+                  return "Why R?";
+                }else{ return d; }
+                })
               .style("cursor", "pointer")
               .attr("class", function(d){ return "zakladki "+d;})
               .style("fill", "black")
@@ -264,7 +310,7 @@ zakladki.on("click",function(d){
 
        d3.select(".zakladki.warsztaty").style("fill", "black")
        d3.select(".zakladki.pakiety").style("fill", "black")
-       d3.select(".zakladki.info").style("fill", "black")
+       d3.select(".zakladki.infografika").style("fill", "black")
 
        d3.select("#chart0").remove()
         d3.select("#svg_chart0").remove()
@@ -293,7 +339,7 @@ zakladki.on("click",function(d){
       
 
 
-    else if( d == "info" ){
+    else if( d == "infografika" ){
 
        d3.select(".zakladki.warsztaty").style("fill", "black")
        d3.select(".zakladki.pakiety").style("fill", "black")
@@ -324,7 +370,7 @@ zakladki.on("click",function(d){
     else if( d == "warsztaty" ){
 
 
-       d3.select(".zakladki.info").style("fill", "black")
+       d3.select(".zakladki.infografika").style("fill", "black")
        d3.select(".zakladki.pakiety").style("fill", "black")
        d3.select(".zakladki.WhyR").style("fill", "black")
 
@@ -348,7 +394,7 @@ zakladki.on("click",function(d){
 
 
        d3.select(".zakladki.warsztaty").style("fill", "black")
-       d3.select(".zakladki.info").style("fill", "black")
+       d3.select(".zakladki.infografika").style("fill", "black")
        d3.select(".zakladki.WhyR").style("fill", "black")
 
         d3.select("#svg_chart_start").remove()
@@ -366,12 +412,18 @@ zakladki.on("click",function(d){
     }
 
 
+
+
 })
 
 
 
 
 rysujEkranGlowny();
+
+
+
+
 
 
 
@@ -442,7 +494,7 @@ var zrodlo = tytuly.append("text")
               .attr("x", margin.left)             
               .attr("y", height+margin.top+ margin.bottom*(2/3))
               .style("font-size", "10px") 
-              .text("Źródło: WhyR - ankiety, RDocumentation");
+              .text("Źródło: Why R? 2017 - ankiety, RDocumentation");
 
  var autor = tytuly.append("text")
               .attr("x", margin.left+ width)         
@@ -497,6 +549,29 @@ var xAxis = d3.svg.axis()
 var skalaCzcionka = d3.scale.linear()
   .domain( [d3.min(danePakiety, function(d){ return d.Freq;}), d3.max(danePakiety, function(d){ return d.Freq;})] )
   .range( [10, 16] );
+
+
+//**************************************************funkcje pomocnicze
+
+
+// funkcja do tooltipow (dodawanie slowa lata / lat / rok / roku)
+
+var jakieLataTekst = function(ile_lat){
+
+    if(ile_lat == 0){
+      return "lat";
+    }else if(ile_lat < 1){
+      return "roku";
+    }else if(ile_lat == 1){
+      return "rok";
+    }else if(ile_lat == 2 | ile_lat == 3 | ile_lat == 4){
+      return "lata";
+    }else if( ile_lat % 1 == 0){
+      return "lat";
+    }else{
+      return "roku";
+    }
+}
 
 
 
@@ -706,9 +781,9 @@ svg.selectAll(".axis.x path")
 
       tooltipki.html( "<b>" + d.name +"</b>" + "<br/>" +
          ""   + "<br/>" +
-        "liczba osób: " + d.freq + "<br/>" +
-        "średnie dośw. w R: " + d.analizaR.toFixed(1) + "<br/>" +
-        "średnie dośw. w analizach: " + d.analiza.toFixed(1) + "<br/>"
+        "liczba osób: " + "<b>" + d.freq +"</b>" + "<br/>" +
+        "średnie dośw. w R: " + "<b>" + d.analizaR.toFixed(1)  +"</b>"+ " " + jakieLataTekst(d.analizaR.toFixed(1)) +  "<br/>" +
+        "średnie dośw. w analizach: " + "<b>" + d.analiza.toFixed(1) +"</b>" + " " + jakieLataTekst( d.analiza.toFixed(1)) + "<br/>"
 
            )
       .style("left", (d3.event.pageX ) + "px") /* ustalamy pozycje elementu tam gdzie zostanie akcja podjeta */
@@ -908,7 +983,7 @@ stworzWykresWarsztaty = function(){
 
 
 // TYTUŁ I PODTYTUŁ
-var tytulik = "Warsztaty na konferencji WhyR?";
+var tytulik = "Warsztaty na konferencji Why R? 2017";
 var podtytulik = "Typowe ścieżki oraz profile uczestników warsztatów";
 
 //********************************************************************************* USTAWIENIA OBSZARU RYSOWANIA
@@ -988,7 +1063,7 @@ var zrodlo = tytuly.append("text")
               .attr("x", margin.left)             
               .attr("y", heightStart+margin.top+ margin.bottom*(2/3))
               .style("font-size", "10px") 
-              .text("Źródło: WhyR - ankiety");
+              .text("Źródło: Why R? 2017 - ankiety");
 
 var autor = tytuly.append("text")
               .attr("x", margin.left+ width)         
@@ -1305,30 +1380,30 @@ sesja_statystyki.append("text")
                         .style("opacity", 1)
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect )   
+                    .attr("x", widthBox/4 + paddingRect*2)   
                     .attr("y", heightBox*1/5)         
-                    .text("[0,2)")
-                    .style("text-anchor", "start")
+                    .text("[0,2]")
+                    .style("text-anchor", "middle")
                       .style("fill", "grey")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect )   
+                    .attr("x", widthBox/4 + paddingRect*2)   
                     .attr("y", heightBox/5+paddingSlupki +heightBox*1/5)           
-                    .text("[2,6)")
-                    .style("text-anchor", "start")
+                    .text("(2,6)")
+                    .style("text-anchor", "middle")
                       .style("fill", "grey")
                        .style("opacity", 0)
                         .transition()
                         .style("opacity", 1)
 
 sesja_statystyki.append("text")
-                    .attr("x", widthBox/4 + paddingRect )
+                    .attr("x", widthBox/4 + paddingRect*2)
                     .attr("y", heightBox/5*2+paddingSlupki*2 +heightBox*1/5)              
                     .text("6+")
-                    .style("text-anchor", "start")
+                    .style("text-anchor", "middle")
                       .style("fill", "grey")
                        .style("opacity", 0)
                         .transition()
