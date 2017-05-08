@@ -294,7 +294,7 @@ var zakladki = pasek.selectAll(".zakladki text")
               .text(function(d){
 
                 if( d == "WhyR"){
-                  return "Why R?";
+                  return "Why R? 2017:";
                 }else{ return d; }
                 })
               .style("cursor", "pointer")
@@ -749,7 +749,7 @@ function renderGraph() {
         .attr("text-anchor", "end")
         .attr("x", width)
         .attr("y", margin.bottom*(2/3))
-        .text("Średnie doświadczenie związane z pakietem R [lata]");
+        .text("średnie doświadczenie związane z pakietem R [lata]");
 
 
       xAxisG.call(xAxis);
@@ -857,12 +857,13 @@ var labelki = grupy.append("text")
               .style("pointer-events", "none")
               .text(function(d){return  d.name;})
               .attr("dy", ".3em")
-              .each(function(d){ // usuwanie napisów które są za dlugie
+              // usuwanie napisów które są za dlugie
+              .each(function(d){ 
 
                     var dl = d3.select(this)[0][0].getComputedTextLength()
                     
                     var r = d3.select(".bubble."+d.name.replace(/\./ig,"_")).attr("r")*2
-                    if( (dl-8) > r){
+                    if( (dl-15) > r){
                      d3.select(this).remove()
                     }
 
