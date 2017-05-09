@@ -369,8 +369,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="391.26436"
+     inkscape:zoom="0.5"
+     inkscape:cx="366.51562"
      inkscape:cy="663.77998"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -395,7 +395,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1091,17 +1091,6 @@
          x="17.804413"
          y="51.972275"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.78493989px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.22311749">*pytanie  wielokrotnego  wyboru</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:5.64444447px;line-height:6.61458254px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="205.65067"
-       y="290.62311"
-       id="text4925"><tspan
-         sodipodi:role="line"
-         id="tspan4923"
-         x="205.65067"
-         y="290.62311"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11666656px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.26458332">Autor: Ewa Baranowska, KN Data Science PW</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.36222219px;line-height:6.28385401px;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.25135416"
