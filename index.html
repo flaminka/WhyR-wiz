@@ -1,0 +1,400 @@
+ <!-- 
+
+dac dane jako argumenty tych funkcji i ten div trzymajacy to w argumencie
+posprzatac w tych funkcjach
+komentarze!!
+jak zmieniam elementy to ich style tez!
+zrobic funkcje usunWykresPakiety i wspolne odwolanie dla tego i stworzWykresPakiety do #svh_chart1 np zeby ten element
+byl usuwany
+
+  -->
+
+<!-- 
+plik generujacy cala wizualizacje 
+
+potrzebne polaczenie z internetem, aby wyswietlic wizualizacje (korzysta z biblioteki D3.js (v3) oraz czcionki Google )
+oraz nastepujace pliki pomocnicze:
+
+do "whyR":
+  stworzEkranGlowny.js (funkcja w JS)
+
+do "infografika":
+  infografika.svg (obraz w formacie svg z gotowa infografika <ggplot2 + Inkscape>)
+  infografika.png (wersja bitmapowa, w razie ew. problemow z czytanie .svg)
+
+do "warsztaty":
+  stworzWykresWarsztaty.js (funkcja w JS)
+  warsztatyDane.js (dane do wykresu)
+
+do "pakiety":
+  stworzWykresPakiety.js (funkcja w JS)
+  pakietyDane.js (dane do wykresu)
+
+-->
+
+
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Why R? 2017</title>
+
+
+   <!-- ****************************************************************** -->
+   <!-- ****************** LADOWANIE NIEZBEDNYCH PLIKOW ****************** -->
+   <!-- ****************************************************************** -->
+
+   <!-- ladowanie biblioteki D3 ze strony internetowej -->
+   <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+
+
+   <!-- skrypt z funkcja do zakladki "whyR" -->
+   <script type="text/javascript" src="stworzEkranGlowny.js"></script>
+
+   <!-- skrypt z danymi oraz funkcja do wykresu w zakladce "warsztaty" -->
+   <script type="text/javascript" src="warsztatyDane.js"></script>
+   <script type="text/javascript" src="stworzWykresWarsztaty.js"></script>
+
+   <!-- skrypt z danymi oraz funkcja do wykresu w zakladce "pakiety" -->
+   <script type="text/javascript" src="pakietyDane.js"></script>
+   <script type="text/javascript" src="stworzWykresPakiety.js"></script>
+
+   <!-- ladowanie czcionki google -->
+   <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&amp;subset=latin-ext" rel="stylesheet">
+
+
+   <!-- ****************************************************************** -->
+   <!-- ************** OKRESLANIE STYLU ELEMENTOW WIZUALIZACJI *********** -->
+   <!-- ****************************************************************** -->
+
+   <style type="text/css">
+
+             svg{
+               display: block;
+               margin-left: auto;
+               margin-right: auto;
+               border: 1px solid black;
+               border-radius: 5px; 
+               box-shadow:  0px 0px 3px 3px rgba(0,0,0,0.4);  
+             }
+
+             img{
+               display: block;
+               margin-left: auto;
+               margin-right: auto;
+               border: 1px solid black;
+               border-radius: 5px; 
+               box-shadow:  0px 0px 3px 3px rgba(0,0,0,0.4);  
+             }
+
+
+             text {
+               font-family: 'Roboto Condensed', sans-serif;
+             }
+
+             .warsztat_nazwa {
+               font-size: 12.5px;
+             }
+
+            /*.glowna rect {
+              stroke-width: 1px;
+              stroke-dasharray: 5px 2px;
+            }*/
+
+             .link {
+               fill: none;
+               stroke: #000;
+               stroke-opacity: .3;
+               shape-rendering: auto;
+             }
+
+             .labelka{
+               font-size: 14px;
+               stroke: none;
+               fill: grey;
+             }
+
+             #przycisk{
+               font-size: 12px;
+             }
+
+             .zajetosc text, .statystyki text {
+               stroke: none;
+               fill: grey;
+               font-size:12px ;
+             }
+
+             #tooltip, #tooltip0 { 
+               position: absolute;  /* jest pozycjonowana pikselami ktore zostaly podane */  
+               height: auto;
+               width:  auto;       
+               padding: 10px;       
+               font: 12px sans-serif;  
+               text-align: left;      
+               background: white; /* tlo */
+               border: 1px solid grey;
+               border-radius: 0px;    /* obramowanie zaokrąglone */ 
+               box-shadow:  0px 0px 0px 0px rgba(0,0,0,1); 
+               pointer-events: none;/*zeby nie reagował na najechanie na niego myszkA, to co my robimy to tworzymy tooltipa i potem
+               go ukrywamy lub nie, jest niewidoczny ale jest, wiec mozna na niego najechac myszka, jesli najedziemy na niego,
+               to nie mamy dostepu do elementow pod nim; (mozna by było po prostu tworzyc i usuwac go w .on) */
+               font-family: 'Roboto Condensed', sans-serif;
+             }
+
+
+             .axis path  {
+               fill: none;
+               stroke: grey;
+               stroke-width: 2px;
+               shape-rendering: crispEdges;  
+               stroke-opacity: 1;
+             }
+
+
+             .axis line{
+               stroke: grey;
+               stroke-width: 2px;
+               stroke-opacity: 0.2;
+             }
+
+
+             .axis text, .legend{
+               font-family: 'Roboto Condensed', sans-serif;
+               font-size: 12px;
+               stroke: none;
+               fill: grey;
+             }
+
+
+             .legend text {
+               stroke: none;
+               fill: black;
+             }
+
+
+     </style>
+
+     
+</head>
+
+
+<!-- ****************************************************************** -->
+<!-- ***************** PODSTAWOWA STRUKTURA DOKUMENTU ***************** -->
+<!-- ****************************************************************** -->
+
+<body>
+
+<!-- 
+
+wizualizacja sklada sie z 5 divow, ktore trzymaja poszczegolne elementy;
+klikniecie w poszczegolne zakladki (4) powoduje dodanie odpowiednich
+elementow do jednych divow i usuwanie zawartosci pozostalych
+
+(divy sa dodawane pod soba i korzystam z tego tutaj:
+pierw definiuje div z menu a pod nim dodawane i usuwane
+sa te poszczegolne divy)
+ -->
+
+    <!-- div z paskiem menu, nigdy nie znika -->
+    <div id="chart_menu"></div>
+
+    <!-- div z ekranem glownym -->
+    <div id="chart_ekranGlowny"></div>
+
+    <!-- div z infografika -->
+    <div id="chart_infografika" ></div>
+
+    <!-- div z wykresem "warsztaty" -->
+    <div id="chart_warsztaty" ></div>
+
+    <!-- div z wykresem "pakiety" -->
+    <div id="chart_pakiety"></div>
+
+
+
+<!-- ****************************************************************** -->
+<!-- ************ ** SKRYPT JS DO TWORZENIA WIZUALUZACJI*************** -->
+<!-- ****************************************************************** -->
+
+    <script type="text/javascript">
+
+
+            /*************************************************************************************************/
+            /************************** TWORZENIE PASKA MENU Z FUNKCJONALNOSCIAMI ****************************/
+            /*************************************************************************************************/
+
+
+            /***** obszar rysowania *****/
+
+            // marginesy wykresu (tu paska)
+            var margin = {top: 140, right: 60, bottom: 60, left: 60};
+
+            // wielkosc wykresu 
+            var width = 980 - margin.left - margin.right,
+                height = 50 - margin.top - margin.bottom;
+
+            // caly wykres
+            var svg=d3.select("#chart_menu")  
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom);
+
+            // obszar rysowania
+            var g = svg.append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .attr( "xmlns",'xlink="http://www.w3.org/1999/xlink"'); //mozliwosc ladowania svg
+
+
+            /***** zakladki *****/
+
+            var zakladkiTytuly = ["WhyR", "infografika", "warsztaty", "pakiety"];
+
+            // grupa trzymajaca zakladki
+            var pasek = svg.append("g")
+                             .attr("class", "tytuly");
+
+
+            var zakladki = pasek.selectAll(".zakladki text")
+                          .data(zakladkiTytuly)
+                          .enter()
+                          .append("text")
+                          .attr("x", function(d,i){return margin.left*2+ (width)/4*(i)})  
+                          .attr("text-anchor", "middle")           
+                          .attr("y", (margin.top)*(1/4))
+                          .style("font-size", "26px")  
+                          .text(function(d){ 
+                                  // wyswietlanie ladnej nazwy zakladki lub predefiniowanej
+                                  if( d == "WhyR"){
+                                    return "Why R? 2017:";
+                                  } else{ return d; }
+                            })
+                          .style("cursor", "pointer")
+                          .attr("class", function(d){ return "zakladki "+d;})
+                          .style("fill", "black")
+                          .style("stroke", "none");
+
+
+            // klikalnosc
+            zakladki.on("click",function(d){
+
+
+                if( d == "WhyR"){
+
+
+                    // zmiana koloru zakladek pozostalych
+                    d3.select(".zakladki.warsztaty").style("fill", "black");
+                    d3.select(".zakladki.pakiety").style("fill", "black");
+                    d3.select(".zakladki.infografika").style("fill", "black");
+
+                    // czyszczenie pozostalych zakladek
+                    d3.select("#infografika").remove();
+                    d3.select("#svg_warsztaty").remove();
+                    d3.select("#svg_pakiety").remove();
+                    d3.select("#tooltip").remove();
+
+                    // dodawanie wybranego wykresu
+                    var c = d3.select("#svg_ekranGlowny");
+
+                    if(c[0][0] == null){
+                      
+                        stworzEkranGlowny();
+                    
+                        d3.select(this).style("fill", "red");
+
+                    }
+
+                }
+
+                else if( d == "infografika" ){
+
+                    d3.select(".zakladki.warsztaty").style("fill", "black");
+                    d3.select(".zakladki.pakiety").style("fill", "black");
+                    d3.select(".zakladki.WhyR").style("fill", "black");
+
+                    d3.select("#svg_ekranGlowny").remove();
+                    d3.select("#svg_warsztaty").remove();
+                    d3.select("#svg_pakiety").remove();
+                    d3.select("#tooltip").remove();
+
+                    var c = d3.select("#infografika");
+
+                    if(c[0][0] == null){
+                      
+                          var c = d3.select("#chart_infografika");
+
+                          c.append("img").attr("id", "infografika").attr("src","infografika.svg")
+                          .attr("onerror","this.src='infografika.png'")
+                          .attr("align","middle");
+                          
+                          d3.select(this).style("fill", "red");
+
+                    }     
+
+                }
+
+                else if( d == "warsztaty" ){
+
+                    d3.select(".zakladki.infografika").style("fill", "black");
+                    d3.select(".zakladki.pakiety").style("fill", "black");
+                    d3.select(".zakladki.WhyR").style("fill", "black");
+
+                    d3.select("#svg_ekranGlowny").remove();
+                    d3.select("#svg_pakiety").remove();
+                    d3.select("#infografika").remove();
+                    d3.select("#tooltip").remove();
+
+
+                    var c = d3.select("#svg_warsztaty");
+                    
+                    if(c[0][0] == null){
+
+                          stworzWykresWarsztaty();
+
+                          d3.select(this).style("fill", "red");
+
+                    }
+
+                }
+
+                else if( d == "pakiety" ){
+
+
+                    d3.select(".zakladki.warsztaty").style("fill", "black");
+                    d3.select(".zakladki.infografika").style("fill", "black");
+                    d3.select(".zakladki.WhyR").style("fill", "black");
+
+                    d3.select("#svg_ekranGlowny").remove();
+                    d3.select("#svg_warsztaty").remove();
+                    d3.select("#infografika").remove();
+                    d3.select("#tooltip").remove();
+
+                    var c = d3.select("#svg_pakiety");
+                    
+                    if(c[0][0] == null){
+
+                            stworzWykresPakiety();
+
+                            d3.select(this).style("fill", "red");
+
+                    }
+                }
+
+
+
+
+            })
+
+
+            /* na poczatek jest wywolywany ekran glowny */
+            stworzEkranGlowny();
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
+
